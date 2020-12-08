@@ -1,0 +1,43 @@
+import sys
+def Text_comparison(one_text, two_text, only_one, only_two, same, only_one_num, only_two_num, only_same_num):
+    with open(one_text, "rb")as text_one, open(two_text, "rb")as text_two, open(only_one, "wb") as fw_one, open(only_two, "wb") as fw_two, open(same, "wb") as fw_same, open(only_one_num, "wb") as fw_one_num, open(only_two_num, "wb") as fw_two_num, open(only_same_num, "wb") as fw_same_num:
+        dic_text_one = {}
+        dic_text_two = {}
+        same_num = one_num = two_num = 0
+        for text_one_line in text_one:
+            v = text_one_line.decode().split('\t')
+            dic_text_one[v[1].replace("\n", "")] = v[0] 
+            #print(dic_text_one)
+        text_one.close()
+        for text_two_line in text_two:
+            v_wav = text_two_line.decode().split('\t')
+            dic_text_two[v_wav[1].replace("\n", "") ] = v_wav[0]
+            #print(dic_text_two)
+        text_two.close()
+        for key,value in dic_text_two.items():#same
+            if key in dic_text_one:
+                same_num = same_num + 1
+                fw_same.write("same".encode())
+                fw_same.write("\t".encode())
+                fw_same.write(key.encode())
+                fw_same.write("\n".encode())
+            else:
+                break
+        fw_same_num.write(str(same_num).encode())
+        for i in dic_text_one.keys()-dic_text_two.keys():#only one
+            one_num = 1 + one_num 
+            fw_one.write("one".encode())
+            fw_one.write("\t".encode())
+            fw_one.write(i.encode())
+            fw_one.write("\n".encode())
+        fw_one_num.write(str(one_num).encode())
+        for i in dic_text_two.keys()-dic_text_one.keys():#only two
+            two_num = two_num + 1
+            fw_two.write("two".encode())
+            fw_two.write("\t".encode())
+            fw_two.write(i.encode())
+            fw_two.write("\n".encode())
+        fw_two_num.write(str(two_num).encode())
+        
+if __name__ == "__main__":
+    Text_comparison(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8])
